@@ -5,6 +5,7 @@ import os
 from dotenv import load_dotenv
 
 from routers import users, pets, orders, adoptions, appointments, visits
+from static_server import setup_static_files
 
 # Load environment variables
 load_dotenv()
@@ -39,9 +40,12 @@ app.include_router(adoptions.router, prefix="/api/adoptions", tags=["adoptions"]
 app.include_router(appointments.router, prefix="/api/appointments", tags=["appointments"])
 app.include_router(visits.router, prefix="/api/visits", tags=["visits"])
 
-@app.get("/")
+@app.get("/api")
 async def root():
     return {"message": "PetLove API Running!"}
+
+# Setup static file serving for production
+setup_static_files(app)
 
 if __name__ == "__main__":
     import uvicorn

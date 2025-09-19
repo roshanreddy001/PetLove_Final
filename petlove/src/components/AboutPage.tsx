@@ -113,7 +113,7 @@ const AboutPage: React.FC = () => {
 
       {/* Team */}
       <div className="bg-white rounded-2xl shadow-lg p-8 mx-4 border border-purple-100">
-        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Meet Our Team</h2>
+        <h2 className="text-3xl font-bold text-gray-800 mb-8 text-center">Meet Our Creator</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
          
         <div className="text-center">
@@ -136,13 +136,13 @@ const AboutPage: React.FC = () => {
             <h3 className="text-xl font-semibold text-gray-800 mb-4">Contact Information</h3>
             <div className="space-y-3">
               <p className="text-gray-600">
-                <strong>Phone:</strong> 9283290123
+                <strong>Phone:</strong> 9949458597
               </p>
               <p className="text-gray-600">
-                <strong>Email:</strong> info@petlove.com
+                <strong>Email:</strong> reddyroshan976@gmail.com
               </p>
               <p className="text-gray-600">
-                <strong>Address:</strong> 123 Banjara Hills Road, Hyderabad City, TS 500034
+                <strong>Address:</strong> begumpet, Hyderabad City, Talangana state
               </p>
             </div>
           </div>
