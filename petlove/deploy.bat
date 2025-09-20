@@ -1,4 +1,4 @@
-@echo off
+echo off
 REM PetLove Production Deployment Script for Windows
 setlocal enabledelayedexpansion
 

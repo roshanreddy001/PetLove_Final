@@ -15,7 +15,7 @@ app = FastAPI(title="PetLove API", description="PetLove Backend API in Python", 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # In production, specify exact origins
+    allow_origins=["petlover-5qxxu7vm4-roshanreddy001s-projects.vercel.app"],  # In production, specify exact origins
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
