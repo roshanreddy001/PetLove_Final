@@ -1,30 +1,12 @@
-from pydantic import BaseModel, Field, ConfigDict
-from typing import Optional, Annotated
+from pydantic import BaseModel, Field, validator
+from typing import Optional
 from bson import ObjectId
-from pydantic_core import core_schema
-from pydantic import GetCoreSchemaHandler
-
-
 
 
 class PyObjectId(ObjectId):
     @classmethod
-    def __get_pydantic_core_schema__(
-        cls, source_type, handler: GetCoreSchemaHandler
-    ) -> core_schema.CoreSchema:
-        return core_schema.json_or_python_schema(
-            json_schema=core_schema.str_schema(),
-            python_schema=core_schema.union_schema([
-                core_schema.is_instance_schema(ObjectId),
-                core_schema.chain_schema([
-                    core_schema.str_schema(),
-                    core_schema.no_info_plain_validator_function(cls.validate),
-                ])
-            ]),
-            serialization=core_schema.plain_serializer_function_ser_schema(
-                lambda x: str(x)
-            ),
-        )
+    def __get_validators__(cls):
+        yield cls.validate
 
     @classmethod
     def validate(cls, v):
@@ -32,10 +14,15 @@ class PyObjectId(ObjectId):
             raise ValueError("Invalid objectid")
         return ObjectId(v)
 
+    @classmethod
+    def __modify_schema__(cls, field_schema):
+        field_schema.update(type="string")
+
+
 class BaseMongoModel(BaseModel):
-    model_config = ConfigDict(
-        populate_by_name=True,
-        arbitrary_types_allowed=True,
-    )
+    class Config:
+        allow_population_by_field_name = True
+        arbitrary_types_allowed = True
+        json_encoders = {ObjectId: str}
     
     id: PyObjectId = Field(default_factory=PyObjectId, alias="_id")
