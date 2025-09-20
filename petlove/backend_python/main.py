@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
+from contextlib import asynccontextmanager
 import os
 from dotenv import load_dotenv
 
@@ -10,27 +11,36 @@ from static_server import setup_static_files
 # Load environment variables
 load_dotenv()
 
-app = FastAPI(title="PetLove API", description="PetLove Backend API in Python", version="1.0.0")
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    app.mongodb_client = AsyncIOMotorClient(os.getenv("MONGODB_URI"))
+    app.mongodb = app.mongodb_client.petlove
+    print("Connected to MongoDB!")
+    yield
+    # Shutdown
+    app.mongodb_client.close()
+
+app = FastAPI(
+    title="PetLove API", 
+    description="PetLove Backend API in Python", 
+    version="1.0.0",
+    lifespan=lifespan
+)
 
 # CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["petlover-5qxxu7vm4-roshanreddy001s-projects.vercel.app"],  # In production, specify exact origins
+    allow_origins=[
+        "http://localhost:3000",
+        "http://localhost:5173",
+        "https://petlover-5qxxu7vm4-roshanreddy001s-projects.vercel.app",
+        "https://*.vercel.app"
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# MongoDB connection
-@app.on_event("startup")
-async def startup_db_client():
-    app.mongodb_client = AsyncIOMotorClient(os.getenv("MONGODB_URI"))
-    app.mongodb = app.mongodb_client.petlove
-    print("Connected to MongoDB!")
-
-@app.on_event("shutdown")
-async def shutdown_db_client():
-    app.mongodb_client.close()
 
 # Include routers
 app.include_router(users.router, prefix="/api/users", tags=["users"])
